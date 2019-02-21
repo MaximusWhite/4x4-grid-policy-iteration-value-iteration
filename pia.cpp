@@ -127,7 +127,6 @@ double action_probability(int state, int state_prime, int action) {
 						break;
 				case DIAG_UR: prob = p3; 
 						break;
-				// default: prob = 0.0; break;
 			};
 			break;
 		/* ACTION = DOWN ********************************************************** */
@@ -143,7 +142,7 @@ double action_probability(int state, int state_prime, int action) {
 				case IDLE: { 	// idle meaning going from state s to state s again
 					switch (edge_position) // depending on which edge the state is (if any), the idle probability will be different
 					{
-						case DOWN: prob = p1 + p2;	// if at the top edge, that means that agent is trying to go off the grid
+						case DOWN: prob = p1 + p2;	// if at the bottom edge, that means that agent was trying to go off the grid
 								break;
 						case DIAG_DL: prob = p1 + p2;
 								break;
@@ -177,7 +176,7 @@ double action_probability(int state, int state_prime, int action) {
 				case IDLE: { 	// idle meaning going from state s to state s again
 					switch (edge_position) // depending on which edge the state is (if any), the idle probability will be different
 					{
-						case LEFT: prob = p1 + p2;	// if at the top edge, that means that agent is trying to go off the grid
+						case LEFT: prob = p1 + p2;	// if at the left edge, that means that agent is trying to go off the grid
 								break;
 						case DIAG_UL: prob = p1 + p2;
 								break;
@@ -211,7 +210,7 @@ double action_probability(int state, int state_prime, int action) {
 				case IDLE: { 	// idle meaning going from state s to state s again
 					switch (edge_position) // depending on which edge the state is (if any), the idle probability will be different
 					{
-						case RIGHT: prob = p1 + p2;	// if at the top edge, that means that agent is trying to go off the grid
+						case RIGHT: prob = p1 + p2;	// if at the right edge, that means that agent is trying to go off the grid
 								break;
 						case DIAG_UR: prob = p1 + p2;
 								break;
@@ -232,12 +231,10 @@ double action_probability(int state, int state_prime, int action) {
 			};
 			break;
 	};
-
 	return prob;
 }
 
 void policy_evaluation() {
-	//cout << "EVAL ***************************************************************************************** EVAL" << endl;
 	double delta;
 	int count = 0;
 	do {
@@ -265,8 +262,6 @@ void policy_evaluation() {
 }
 
 bool policy_improvement() {
-
-	//cout << "IMPROV" << endl;
 	bool stable = true;
 	
 	for (int s = 0; s < 16; s++) {
@@ -277,8 +272,6 @@ bool policy_improvement() {
 			for (int s_prime = 0; s_prime < 16; s_prime++) {
 				double prob = transition_probabilities[s][a][s_prime];
 				double reward = rewards[a];
-
-				//cout << "S = " << s << " ; A = " << a << "; s' = " << s_prime << "; prob = " << prob << "; reward = " << reward << "; V[s'] = " << V[s_prime]  << endl; 
 				sum_s_prime = sum_s_prime + (prob * (reward + gamma_const * V[s_prime]));
 			}
 			action_val[a] = sum_s_prime;
